@@ -1,26 +1,135 @@
+---
 openapi: 3.0.1
 info:
   title: Choreo Reading List
   description: This is a sample service that manages a list of reading items.
   contact: {}
-  version: "1.0"
+  version: '1.0'
 servers:
-- url: //localhost:8080/api/v1/reading-list
+- url: "//localhost:8080/api/v1/reading-list"
 paths:
-  /books:
+  "/authors":
     get:
       tags:
-      - books
-      summary: List all the reading list books
+      - authors
+      summary: Get all Authors associated with books
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/models.Book'
+                  "$ref": "#/components/schemas/models.Author"
+    post:
+      tags:
+      - authors
+      summary: Add a new Auth
+      requestBody:
+        description: New Author details
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/models.Author"
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/models.Author"
+        '400':
+          description: invalid Author details
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+        '409':
+          description: author already exists
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+      x-codegen-request-body-name: request
+  "/authors/{id}":
+    get:
+      tags:
+      - authors
+      summary: Get Author by id
+      parameters:
+      - name: id
+        in: path
+        description: Book ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/models.Author"
+        '404':
+          description: Author not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+    put:
+      tags:
+      - authors
+      summary: Update a reading list book by id
+      parameters:
+      - name: id
+        in: path
+        description: Author ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Updated author details
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/models.Author"
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/models.Author"
+        '400':
+          description: invalid book details
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+        '404':
+          description: book not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+      x-codegen-request-body-name: request
+  "/books":
+    get:
+      tags:
+      - books
+      summary: List all the reading list books
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/models.Book"
     post:
       tags:
       - books
@@ -30,29 +139,29 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/models.Book'
+              "$ref": "#/components/schemas/models.Book"
         required: true
       responses:
-        "201":
+        '201':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/models.Book'
-        "400":
+                "$ref": "#/components/schemas/models.Book"
+        '400':
           description: invalid book details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-        "409":
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+        '409':
           description: book already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
+                "$ref": "#/components/schemas/utils.ErrorResponse"
       x-codegen-request-body-name: request
-  /books/{id}:
+  "/books/{id}":
     get:
       tags:
       - books
@@ -65,18 +174,18 @@ paths:
         schema:
           type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/models.Book'
-        "404":
+                "$ref": "#/components/schemas/models.Book"
+        '404':
           description: book not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
+                "$ref": "#/components/schemas/utils.ErrorResponse"
     put:
       tags:
       - books
@@ -93,27 +202,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/models.Book'
+              "$ref": "#/components/schemas/models.Book"
         required: true
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/models.Book'
-        "400":
+                "$ref": "#/components/schemas/models.Book"
+        '400':
           description: invalid book details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
-        "404":
+                "$ref": "#/components/schemas/utils.ErrorResponse"
+        '404':
           description: book not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
+                "$ref": "#/components/schemas/utils.ErrorResponse"
       x-codegen-request-body-name: request
     delete:
       tags:
@@ -127,20 +236,29 @@ paths:
         schema:
           type: string
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/models.Book'
-        "404":
+                "$ref": "#/components/schemas/models.Book"
+        '404':
           description: book not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/utils.ErrorResponse'
+                "$ref": "#/components/schemas/utils.ErrorResponse"
 components:
   schemas:
+    models.Author:
+      type: object
+      properties:
+        id:
+          type: string
+          example: fe2594d0-ccea-42a2-97ac-0487458b5642
+        name:
+          type: string
+          example: J. R. R. Tolkien
     models.Book:
       type: object
       properties:
@@ -154,7 +272,7 @@ components:
           type: object
           example: to_read
           allOf:
-          - $ref: '#/components/schemas/models.ReadStatus'
+          - "$ref": "#/components/schemas/models.ReadStatus"
         title:
           type: string
           example: The Lord of the Rings
@@ -174,4 +292,4 @@ components:
         message:
           type: string
           example: error message
-
+x-original-swagger-version: '2.0'
