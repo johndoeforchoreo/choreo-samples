@@ -41,6 +41,18 @@ type Book struct {
 	Status ReadStatus `json:"status" example:"to_read" enums:"to_read,reading,read"`
 }
 
+// Create a model called Author
+type Author struct {
+	Id   string `json:"id" example:"fe2594d0-ccea-42a2-97ac-0487458b5642"`
+	Name string `json:"name" example:"J. R. R. Tolkien"`
+}
+
+type Library struct {
+	Id   string `json:"id" example:"fe2594d0-ccea-42a2-97ac-0487458b5642"`
+	Name string `json:"name" example:"J. R. R. Tolkien"`
+}
+
+
 type BookRepository interface {
 	Add(ctx context.Context, book Book) (Book, error)
 	Update(ctx context.Context, updatedBook Book) (Book, error)

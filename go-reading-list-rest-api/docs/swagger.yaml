@@ -1,5 +1,14 @@
 basePath: /api/v1/reading-list
 definitions:
+  models.Author:
+    properties:
+      id:
+        example: fe2594d0-ccea-42a2-97ac-0487458b5642
+        type: string
+      name:
+        example: J. R. R. Tolkien
+        type: string
+    type: object
   models.Book:
     properties:
       author:
@@ -43,6 +52,103 @@ info:
   title: Choreo Reading List
   version: "1.0"
 paths:
+  /authors:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            items:
+              $ref: '#/definitions/models.Author'
+            type: array
+      summary: Get all Authors associated with books
+      tags:
+      - authors
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New Author details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Author'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/models.Author'
+        "400":
+          description: invalid Author details
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "409":
+          description: author already exists
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Add a new Auth
+      tags:
+      - authors
+  /authors/{id}:
+    get:
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/models.Author'
+        "404":
+          description: Author not found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Get Author by id
+      tags:
+      - authors
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated author details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Author'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: '#/definitions/models.Author'
+        "400":
+          description: invalid book details
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: book not found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      summary: Update a reading list book by id
+      tags:
+      - authors
   /books:
     get:
       produces:
