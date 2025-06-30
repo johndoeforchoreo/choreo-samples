@@ -7,6 +7,7 @@ import subprocess
 
 REPO_BASE_DIR = os.environ['BUILD_SOURCESDIRECTORY']
 SAMPLE_COMPONENT_TYPE_SERVICE = 'service'
+SAMPLE_COMPONENT_TYPE_MCP_SERVICE = 'mcp-service'
 CHOREO_ACR_BASE_URL = 'choreoanonymouspullable.azurecr.io'
 
 def validate_metadata_and_thumbnails():
@@ -38,6 +39,18 @@ def validate_metadata_and_thumbnails():
                 if not description:
                     raise ValueError(f"Error: 'description' is not set for the sample: {meta_file}.")
 
+                component_type = data.get('componentType', '')
+                if not metadata_validator.validate_component_type(component_type):
+                    raise ValueError(f"Error: '{component_type}' is not a valid component type for the sample: {meta_file}.")
+
+                thumbnail_src = os.path.join(samples_dir, data.get('thumbnailPath').lstrip('/'))
+                if not metadata_validator.validate_thumbnail(thumbnail_src):
+                    raise FileNotFoundError(f"Thumbnail not found in {data.get('thumbnailPath')}")
+
+                # Validations after this point are not required for mcp-service
+                if component_type == SAMPLE_COMPONENT_TYPE_MCP_SERVICE:
+                    continue
+                    
                 documentation_path = data.get('documentationPath')
                 if not documentation_path:
                     raise ValueError(f"Error: 'documentationPath' is not set for the sample: {meta_file}.")
@@ -49,10 +62,6 @@ def validate_metadata_and_thumbnails():
                 repository_url = data.get('repositoryUrl')
                 if not repository_url:
                     raise ValueError(f"Error: 'repositoryUrl' is not set for the sample: {meta_file}.")
-                
-                component_type = data.get('componentType', '')
-                if not metadata_validator.validate_component_type(component_type):
-                    raise ValueError(f"Error: '{component_type}' is not a valid component type for the sample: {meta_file}.")
                 
                 tags = data.get('tags')
                 if tags and not isinstance(tags, list):
@@ -114,10 +123,6 @@ def validate_metadata_and_thumbnails():
                 build_pack = data.get('buildPack', '')
                 if not metadata_validator.validate_build_pack(build_pack):
                     raise ValueError(f"Error: '{build_pack}' is not a valid build pack for the sample: {meta_file}.")
-
-            thumbnail_src = os.path.join(samples_dir, data.get('thumbnailPath').lstrip('/'))
-            if not metadata_validator.validate_thumbnail(thumbnail_src):
-                raise FileNotFoundError(f"Thumbnail not found in {data.get('thumbnailPath')}")
 
             samples_dirnames_set.add(component_path.lstrip('/'))
 
